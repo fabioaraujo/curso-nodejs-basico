@@ -25,9 +25,30 @@ app.use(methodOverride(function (req, res) {
       delete req.body._method;
       return method;
     }
-  }))
+  })
+);
+
+
 
 const rotas = require('../app/rotas/rotas.js');
 rotas(app);
+
+/*
+ importante incluir esses tratamentos após a inclusão de nossas rotas, 
+ ou todas as rotasserão sobrescritas e responderam como 404
+ */
+app.use(function (erro, req, resp, next) {
+    return resp.status(500).marko(
+        require('../app/views/base/erros/500.marko')
+    );
+
+});
+
+app.use(function (req, resp, next) {
+    return resp.status(404).marko(
+        require('../app/views/base/erros/404.marko')
+    );
+
+});
 
 module.exports = app;

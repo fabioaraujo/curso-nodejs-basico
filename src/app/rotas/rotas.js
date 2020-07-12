@@ -60,7 +60,7 @@ module.exports = (app) => {
     app.get('/livros/form/:id', function(req, resp) {
         const id = req.params.id;
         const livroDao = new LivroDao(db);
-    
+        console.log("Busca livro");
         livroDao.buscaPorId(id)
             .then(livro => 
                 resp.marko(
