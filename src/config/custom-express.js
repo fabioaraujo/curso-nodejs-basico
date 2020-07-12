@@ -7,6 +7,7 @@ const express = require('express');
 const app = express();
 
 //a ordem de declaração dos middlewares é importante
+//middlewares funcionam de forma similar aos filtros do java
 
 const bodyParser = require('body-parser');
 
