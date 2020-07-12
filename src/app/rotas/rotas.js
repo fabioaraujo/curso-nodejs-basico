@@ -3,6 +3,8 @@ const db = require('../../config/database');
 const sqlite3 = require('sqlite3').verbose();
 const bd = new sqlite3.Database('data.db');
 
+const LivroDao = require('../infra/livro-dao');
+
 module.exports = (app) => {
 
     app.get('/', function(req, resp) {
@@ -21,7 +23,8 @@ module.exports = (app) => {
     });
 
     app.get('/livros', function(req, resp) {
-        db.all('SELECT * FROM livros', function(erro, resultados) {
+        const livroDao = new LivroDao(db);
+        livroDao.lista(function(erro, resultados) {
             resp.marko(
                 require('../views/livros/lista/lista.marko'),
                 {
