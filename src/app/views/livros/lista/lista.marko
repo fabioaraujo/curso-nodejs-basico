@@ -1,6 +1,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <title>Curso Node</title>
     </head>
     <body>
         <h1> Listagem de livros </h1>
@@ -17,7 +18,7 @@
                 <td>${livro.id}</td>
                 <td>${livro.titulo}</td>
                 <td>${livro.preco}</td>
-                <td><a href="#">Editar</a></td> 
+                <td><a href="/livros/form/${livro.id}">Editar</a></td> 
                 <td><a href="#" data-ref="${livro.id}" data-type="remocao">Remover</a></td> 
             </tr>
         </table> 
