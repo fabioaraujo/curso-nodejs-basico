@@ -1,6 +1,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <title>Curso NodeJS</title>
         <link rel="stylesheet" href="/estatico/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/estatico/css/fontawesome.min.css" />
         <link rel="stylesheet" href="/estatico/css/casadocodigo.css" />
@@ -23,7 +24,11 @@
         <main class="conteudoPrincipal">
             <div class="container">
                 <h1>Cadastro de livros</h1>
-                
+                <div if(data.errosValidacao)>
+                    <div class="alert alert-danger" for(erro in data.errosValidacao)>
+                        ${erro.param} - ${erro.msg}
+                    </div>
+                </div>
                 <form action="/livros" method="post">
 
                     <div if(data.livro.id)>

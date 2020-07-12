@@ -1,83 +1,29 @@
-const db = require('../../config/database');
+const LivroControlador = require('../controladores/livro-controlador');
+const livroControlador = new LivroControlador();
 
-const sqlite3 = require('sqlite3').verbose();
-const bd = new sqlite3.Database('data.db');
+const BaseControlador = require('../controladores/base-controlador');
+const baseControlador = new BaseControlador();
 
-const LivroDao = require('../infra/livro-dao');
+const { check } = require('express-validator/check');
 
 module.exports = (app) => {
 
-    app.get('/', function(req, resp) {
-        resp.send(
-            `
-                <html>
-                    <head>
-                        <meta charset="utf-8">
-                    </head>
-                    <body>
-                        <h1> Casa do Código </h1>
-                    </body> 
-                </html>
-            `
-        );
-    });
+    app.get('/', baseControlador.home());
 
-    app.get('/livros', function(req, resp) {
-        const livroDao = new LivroDao(db);
-        livroDao.lista()
-            .then(livros => resp.marko(
-                require('../views/livros/lista/lista.marko'),
-                {
-                    livros: livros
-                }
-            ))
-            .catch(erro => console.log(erro));
-        
-    });
+    app.get('/livros', livroControlador.lista());
 
-    app.get('/livros/form', function(req, resp) {
-        resp.marko(require('../views/livros/form/form.marko'), { livro: {} })
-    });
+    app.get('/livros/form', livroControlador.formularioCadastro());
 
-    app.post('/livros', function(req, resp) {
-        console.log(req.body);
-        const livroDao = new LivroDao(db);
-        livroDao.adiciona(req.body)
-            .then(resp.redirect('/livros'))   
-            .catch(erro => console.log(erro));
-    });
+    app.post('/livros', [
+        check('titulo').isLength({ min: 5 }).withMessage("O título precisa ter no mínimo 5 caracteres!"),
+        check('preco').isCurrency().withMessage("O preço precisa ter um valor monetário válido!")
+        ],        
+        livroControlador.cadastra()
+    );
 
-    app.delete('/livros/:id', function(req, resp) {
-        const id = req.params.id;
-    
-        const livroDao = new LivroDao(db);
-        livroDao.remove(id)
-            .then(() => resp.status(200).end())
-            .catch(erro => console.log(erro));
-    
-    });
+    app.delete('/livros/:id', livroControlador.remove());
 
-    app.get('/livros/form/:id', function(req, resp) {
-        const id = req.params.id;
-        const livroDao = new LivroDao(db);
-        console.log("Busca livro");
-        livroDao.buscaPorId(id)
-            .then(livro => 
-                resp.marko(
-                    require('../views/livros/form/form.marko'),
-                    { livro: livro }
-                )
-            )
-            .catch(erro => console.log(erro));
-    
-    });
+    app.get('/livros/form/:id', livroControlador.formularioEdicao());
 
-    app.put('/livros', function(req, resp) {
-
-        const livroDao = new LivroDao(db);
-
-        livroDao.atualiza(req.body)
-                .then(resp.redirect('/livros'))
-                .catch(erro => console.log(erro));
-    });
+    app.put('/livros', livroControlador.edita());
 }
